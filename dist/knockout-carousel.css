@@ -1,0 +1,51 @@
+.carousel {
+  display: inline-block;
+  text-align: left;
+  position: relative; }
+
+.carousel-items {
+  position: relative;
+  z-index: 1;
+  font-size: 0;
+  line-height: 0;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap; }
+
+.carousel-item {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  vertical-align: top;
+  white-space: normal;
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  backface-visibility: hidden;
+  perspective: 1000; }
+  .carousel-item:first-child [data-carousel-current="1"] .carousel-item {
+    margin-left: 0%; }
+  [data-carousel-current="2"] .carousel-item {
+    margin-left: -100%; }
+  [data-carousel-current="3"] .carousel-item {
+    margin-left: -200%; }
+  [data-carousel-current="4"] .carousel-item {
+    margin-left: -300%; }
+  [data-carousel-current="5"] .carousel-item {
+    margin-left: -400%; }
+  [data-carousel-current="6"] .carousel-item {
+    margin-left: -500%; }
+  .carousel-item.is-scrollable {
+    overflow-y: scroll; }
+  .notransition .carousel-item {
+    transition: none; }
+
+.carousel__button {
+  position: relative;
+  display: inline-block;
+  cursor: pointer; }
+  .carousel__button.is-disabled {
+    color: gray; }

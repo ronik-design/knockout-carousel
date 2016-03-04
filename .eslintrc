@@ -1,0 +1,6 @@
+{
+  "extends": "defaults/configurations/walmart/es6-browser",
+  "rules": {
+    "max-params": 0
+  }
+}
