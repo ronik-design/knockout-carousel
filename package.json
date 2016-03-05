@@ -1,6 +1,6 @@
 {
   "name": "knockout-carousel",
-  "version": "0.0.0",
+  "version": "0.9.0",
   "description": "An efficient, configurable carousel for knockout.js",
   "main": "dist/knockout-carousel.js",
   "jsnext:main": "lib/knockout-carousel.js",
