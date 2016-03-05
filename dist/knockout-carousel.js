@@ -1,15 +1,18 @@
 'use strict';
 
-/* eslint max-statements:0 */
+var jquery_event_move = require('jquery.event.move');
+var jquery_event_swipe = require('jquery.event.swipe');
 
 var INCREMENT = 1;
 
 var DEFAULTS = {
+  activeClass: "is-active",
   currentAttribute: "data-carousel-current",
   wrapSelector: "[data-carousel-wrap]",
   itemSelector: "[data-carousel-item]",
   prevSelector: "[data-carousel-prev]",
   nextSelector: "[data-carousel-next]",
+  pageSelector: "[data-carousel-page]",
   firstIndex: 1
 };
 
@@ -41,28 +44,41 @@ var autoadvance = function autoadvance(seconds, nextFn) {
   };
 };
 
-var binding = function binding(ko, $, opt) {
+var toggleSetClass = function toggleSetClass($set, index, className) {
+
+  $set.each(function (idx, el) {
+    el.classList.remove(className);
+  });
+
+  if ($set[index]) {
+    $set[index].classList.add(className);
+  }
+};
+
+var binding = function binding(ko, $) {
+  var opt = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
 
   ko = ko || window.ko;
   $ = $ || window.$ || window.jQuery;
-
-  require("jquery.event.move")($);
-  require("jquery.event.swipe")($);
 
   var isTouchDevice = opt.touchTest || touchTest;
 
   var init = function init(element, valueAccessor) {
 
-    var obj = valueAccessor();
-    var index = ko.isObservable(obj.index) || ko.observable(0);
+    var value = valueAccessor();
+    var obj = value || {};
+    var index = ko.isObservable(obj.index) || ko.observable();
 
     var _Object$assign = Object.assign(DEFAULTS, obj);
 
+    var activeClass = _Object$assign.activeClass;
     var currentAttribute = _Object$assign.currentAttribute;
     var wrapSelector = _Object$assign.wrapSelector;
     var itemSelector = _Object$assign.itemSelector;
     var prevSelector = _Object$assign.prevSelector;
     var nextSelector = _Object$assign.nextSelector;
+    var pageSelector = _Object$assign.pageSelector;
     var firstIndex = _Object$assign.firstIndex;
 
 
@@ -71,51 +87,81 @@ var binding = function binding(ko, $, opt) {
     var $prev = $(prevSelector);
     var $next = $(nextSelector);
     var $items = $wrap.find(itemSelector);
+    var $pages = $(pageSelector);
 
     var width = $wrap[0].offsetWidth;
     var total = $items.length;
 
+    var goToPage = function goToPage(num) {
+      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+
+      if ($next.length) {
+        if (num >= total && !options.loop) {
+          $next[0].classList.add("is-disabled");
+        } else {
+          $next[0].classList.remove("is-disabled");
+        }
+      }
+
+      if ($prev.length) {
+        if (num <= firstIndex && !options.loop) {
+          $prev[0].classList.add("is-disabled");
+        } else {
+          $prev[0].classList.remove("is-disabled");
+        }
+      }
+
+      index(num);
+    };
+
     var onPrev = function onPrev() {
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-
-      $next[0].classList.remove("is-disabled");
-
-      if (options.loop && index() <= firstIndex) {
-        index(total);
-      } else if (index() <= firstIndex) {
-        $prev[0].classList.add("is-disabled");
+      var currIndex = index();
+      if (options.loop && currIndex <= firstIndex) {
+        goToPage(total, options);
       } else {
-        index(index() - INCREMENT);
+        goToPage(currIndex - INCREMENT, options);
       }
     };
 
     var onNext = function onNext() {
       var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-
-      $prev[0].classList.remove("is-disabled");
-
-      if (options.loop && index() >= total) {
-        index(firstIndex);
-      } else if (index() >= total) {
-        $next[0].classList.add("is-disabled");
+      var currIndex = index();
+      if (options.loop && currIndex >= total) {
+        goToPage(firstIndex, options);
       } else {
-        index(index() + INCREMENT);
+        goToPage(currIndex + INCREMENT, options);
       }
     };
 
     var resetAutoadvance = obj.autoadvance ? autoadvance(obj.autoadvance, onNext) : null;
 
-    $prev.on("click", function (event) {
-      event.preventDefault();
-      onPrev({ loop: true });
-    });
+    if ($prev.length) {
+      $prev.on("click", function (event) {
+        event.preventDefault();
+        onPrev({ loop: true });
+      });
+    }
 
-    $next.on("click", function (event) {
-      event.preventDefault();
-      onNext({ loop: true });
-    });
+    if ($next.length) {
+      $next.on("click", function (event) {
+        event.preventDefault();
+        onNext({ loop: true });
+      });
+    }
+
+    if ($pages.length) {
+      $pages.each(function (i, page) {
+        $(page).on("click", function (event) {
+          event.preventDefault();
+          toggleSetClass($pages, i, activeClass);
+          goToPage(i + 1);
+        });
+      });
+    }
 
     if (isTouchDevice()) {
 
@@ -153,10 +199,13 @@ var binding = function binding(ko, $, opt) {
     }
 
     index.subscribe(function (i) {
+
       if (resetAutoadvance) {
         resetAutoadvance();
       }
+
       $element[0].setAttribute(currentAttribute, i);
+      toggleSetClass($items, i - 1, activeClass);
     });
 
     $element[0].setAttribute(currentAttribute, firstIndex);
@@ -164,6 +213,8 @@ var binding = function binding(ko, $, opt) {
     if (resetAutoadvance) {
       resetAutoadvance();
     }
+
+    index(firstIndex);
   };
 
   return {

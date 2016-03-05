@@ -1,12 +1,18 @@
 $easing: cubic-bezier(0.165, 0.84, 0.44, 1);
 
 .carousel {
-  display: inline-block;
-  text-align: left;
+  width: 784px;
+  border: 8px solid #333333;
+  background-color: #444444;
+  overflow: hidden;
   position: relative;
+  margin: 0 auto;
 }
 
-.carousel-items {
+.carousel__items {
+  height: 100%;
+  width: 100%;
+
   position: relative;
   z-index: 1;
   font-size: 0;
@@ -17,56 +23,51 @@ $easing: cubic-bezier(0.165, 0.84, 0.44, 1);
   white-space: nowrap;
 }
 
-.carousel-item {
-  position: relative;
+.carousel__item {
   display: inline-block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  transition: all 0.5s $easing;
   vertical-align: top;
-  white-space: normal;
+  position: relative;
+  width: 100%;
+  margin-right: -100%;
 
-  -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  backface-visibility: hidden;
-  perspective: 1000;
+  left: -100%;
+  overflow: hidden;
+  z-index: 1;
+  transition-property: left, height;
+  transition-duration: 333ms;
+  transition-timing-function: cubic-bezier(0.1, 0.7, 0.7, 1);
+  transform: translate3d(0, 0, 0);
 
-  &:first-child
-    [data-carousel-current="1"] & {
-      margin-left: 0%;
-    }
+  > img {
+    width: 100%;
+    height: auto;
+  }
 
-    [data-carousel-current="2"] & {
-      margin-left: -100%;
-    }
+  &.is-active {
+    left: 0;
+  }
 
-    [data-carousel-current="3"] & {
-      margin-left: -200%;
-    }
-
-    [data-carousel-current="4"] & {
-      margin-left: -300%;
-    }
-
-    [data-carousel-current="5"] & {
-      margin-left: -400%
-    }
-
-    [data-carousel-current="6"] & {
-      margin-left: -500%;
-    }
-
-  &.is-scrollable {
-    overflow-y: scroll;
+  &.is-active ~ .carousel__item {
+    left: 100%;
   }
 
   .notransition & {
-    transition: none;
+    transition-duration: 0 !important;
+    transition-delay: 0 !important;
   }
 }
 
 .carousel__button {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+
+  &.is-disabled {
+    color: gray;
+  }
+}
+
+.carousel__page {
   position: relative;
   display: inline-block;
   cursor: pointer;
