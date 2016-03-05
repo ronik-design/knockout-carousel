@@ -1,51 +1,34 @@
 .carousel {
-  display: inline-block;
-  text-align: left;
+  overflow: hidden;
   position: relative; }
 
-.carousel-items {
+.carousel__items {
+  height: 100%;
+  width: 100%;
   position: relative;
-  z-index: 1;
-  font-size: 0;
-  line-height: 0;
   margin: 0 auto;
   padding: 0;
   overflow: hidden;
   white-space: nowrap; }
 
-.carousel-item {
-  position: relative;
+.carousel__item {
   display: inline-block;
+  position: relative;
   width: 100%;
-  height: 100%;
+  margin-right: -100%;
+  left: -100%;
   overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-  vertical-align: top;
-  white-space: normal;
-  -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  backface-visibility: hidden;
-  perspective: 1000; }
-  .carousel-item:first-child [data-carousel-current="1"] .carousel-item {
-    margin-left: 0%; }
-  [data-carousel-current="2"] .carousel-item {
-    margin-left: -100%; }
-  [data-carousel-current="3"] .carousel-item {
-    margin-left: -200%; }
-  [data-carousel-current="4"] .carousel-item {
-    margin-left: -300%; }
-  [data-carousel-current="5"] .carousel-item {
-    margin-left: -400%; }
-  [data-carousel-current="6"] .carousel-item {
-    margin-left: -500%; }
-  .carousel-item.is-scrollable {
-    overflow-y: scroll; }
-  .notransition .carousel-item {
-    transition: none; }
-
-.carousel__button {
-  position: relative;
-  display: inline-block;
-  cursor: pointer; }
-  .carousel__button.is-disabled {
-    color: gray; }
+  transition-property: left, height;
+  transition-duration: 333ms;
+  transition-timing-function: cubic-bezier(0.1, 0.7, 0.7, 1);
+  transform: translate3d(0, 0, 0); }
+  .carousel__item > img {
+    width: 100%;
+    height: auto; }
+  .carousel__item.is-active {
+    left: 0; }
+  .carousel__item.is-active ~ .carousel__item {
+    left: 100%; }
+  .is-swiping .carousel__item {
+    transition-duration: 0 !important;
+    transition-delay: 0 !important; }

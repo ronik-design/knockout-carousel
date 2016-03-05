@@ -1,22 +1,14 @@
 $easing: cubic-bezier(0.165, 0.84, 0.44, 1);
 
 .carousel {
-  width: 784px;
-  border: 8px solid #333333;
-  background-color: #444444;
   overflow: hidden;
   position: relative;
-  margin: 0 auto;
 }
 
 .carousel__items {
   height: 100%;
   width: 100%;
-
   position: relative;
-  z-index: 1;
-  font-size: 0;
-  line-height: 0;
   margin: 0 auto;
   padding: 0;
   overflow: hidden;
@@ -25,14 +17,12 @@ $easing: cubic-bezier(0.165, 0.84, 0.44, 1);
 
 .carousel__item {
   display: inline-block;
-  vertical-align: top;
   position: relative;
   width: 100%;
   margin-right: -100%;
 
   left: -100%;
   overflow: hidden;
-  z-index: 1;
   transition-property: left, height;
   transition-duration: 333ms;
   transition-timing-function: cubic-bezier(0.1, 0.7, 0.7, 1);
@@ -51,28 +41,16 @@ $easing: cubic-bezier(0.165, 0.84, 0.44, 1);
     left: 100%;
   }
 
-  .notransition & {
+  .is-swiping & {
     transition-duration: 0 !important;
     transition-delay: 0 !important;
   }
 }
 
 .carousel__button {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-
-  &.is-disabled {
-    color: gray;
-  }
+  &.is-disabled {}
 }
 
 .carousel__page {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-
-  &.is-disabled {
-    color: gray;
-  }
+  &.is-disabled {}
 }

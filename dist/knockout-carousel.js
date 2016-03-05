@@ -6,7 +6,9 @@ var jquery_event_swipe = require('jquery.event.swipe');
 var INCREMENT = 1;
 
 var DEFAULTS = {
+  swipeClass: "is-swiping",
   activeClass: "is-active",
+  disabledClass: "is-disabled",
   currentAttribute: "data-carousel-current",
   wrapSelector: "[data-carousel-wrap]",
   itemSelector: "[data-carousel-item]",
@@ -72,7 +74,9 @@ var binding = function binding(ko, $) {
 
     var _Object$assign = Object.assign(DEFAULTS, obj);
 
+    var swipeClass = _Object$assign.swipeClass;
     var activeClass = _Object$assign.activeClass;
+    var disabledClass = _Object$assign.disabledClass;
     var currentAttribute = _Object$assign.currentAttribute;
     var wrapSelector = _Object$assign.wrapSelector;
     var itemSelector = _Object$assign.itemSelector;
@@ -98,17 +102,29 @@ var binding = function binding(ko, $) {
 
       if ($next.length) {
         if (num >= total && !options.loop) {
-          $next[0].classList.add("is-disabled");
+          $next[0].classList.add(disabledClass);
+          if ($next[0].tagName === "BUTTON") {
+            $next[0].disabled = true;
+          }
         } else {
-          $next[0].classList.remove("is-disabled");
+          $next[0].classList.remove(disabledClass);
+          if ($next[0].tagName === "BUTTON") {
+            $next[0].disabled = false;
+          }
         }
       }
 
       if ($prev.length) {
         if (num <= firstIndex && !options.loop) {
-          $prev[0].classList.add("is-disabled");
+          $prev[0].classList.add(disabledClass);
+          if ($prev[0].tagName === "BUTTON") {
+            $prev[0].disabled = true;
+          }
         } else {
-          $prev[0].classList.remove("is-disabled");
+          $prev[0].classList.remove(disabledClass);
+          if ($prev[0].tagName === "BUTTON") {
+            $prev[0].disabled = false;
+          }
         }
       }
 
@@ -178,7 +194,7 @@ var binding = function binding(ko, $) {
           return;
         }
 
-        $wrap[0].classList.add("notransition");
+        $wrap[0].classList.add(swipeClass);
       }).on("move", function (e) {
 
         var base = (index() - 1) * -HUNDRED;
@@ -193,7 +209,7 @@ var binding = function binding(ko, $) {
         }
       }).on("moveend", function () {
 
-        $wrap[0].classList.remove("notransition");
+        $wrap[0].classList.remove(swipeClass);
         $items[0].style.marginLeft = "";
       });
     }
